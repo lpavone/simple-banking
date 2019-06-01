@@ -1,5 +1,6 @@
 package com.worldnettps.simplebanking.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -18,6 +19,7 @@ import javax.persistence.TemporalType;
 
 import com.worldnettps.simplebanking.model.enums.TransactionType;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,12 +27,15 @@ import lombok.Setter;
 @Setter
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
-public class Transaction {
+@EqualsAndHashCode
+public class Transaction implements Serializable {
 	
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@Column
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private Long idTransaction;
 	
 	@ManyToOne
 	@JoinColumn(name="account_id")
@@ -42,7 +47,11 @@ public class Transaction {
 	
 	@Column
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date date;
+	private Date dateTransaction;
+	
+	@Column
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date dateSchedule;
 	
 	@Column
 	private BigDecimal amount;

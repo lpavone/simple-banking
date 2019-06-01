@@ -5,6 +5,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,14 +13,13 @@ import lombok.Setter;
 @Setter
 @Entity
 @PrimaryKeyJoinColumn(name="transaction_id")
+@EqualsAndHashCode(callSuper=true)
 public class TransactionTransfer extends Transaction {
+
+	private static final long serialVersionUID = 1L;
 	
 	@ManyToOne
-	@JoinColumn(name="accountToNumber")
-	private Account accountTo;
-
-	@ManyToOne
-	@JoinColumn(name="accountFromNumber")
+	@JoinColumn(name="account_from_number")
 	private Account accountFrom;
 	
 }

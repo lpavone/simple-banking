@@ -3,15 +3,19 @@ package com.worldnettps.simplebanking.service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.worldnettps.simplebanking.dto.AccountUserVO;
+import com.worldnettps.simplebanking.dto.AccountUserDTO;
+import com.worldnettps.simplebanking.dto.AccountDTO;
+import com.worldnettps.simplebanking.exceptions.ObjectNotFoundException;
 import com.worldnettps.simplebanking.model.Account;
 import com.worldnettps.simplebanking.model.Balance;
 import com.worldnettps.simplebanking.model.User;
 import com.worldnettps.simplebanking.repository.AccountRepository;
+import com.worldnettps.simplebanking.util.MessageEnum;
 
 @Component
 public class AccountService {
@@ -31,21 +35,10 @@ public class AccountService {
 
 	/**
 	 * Create a new account and user
-	 * @param accountUser - {@link AccountUserVO}
+	 * @param accountUser - {@link AccountUserDTO}
 	 * @return account number - {@link Long}
 	 */
-	public Long createAccount(AccountUserVO accountUser) {
-		Account account = getNewAccout(accountUser);
-
-		return accountRepository.save(account).getNumber();
-	}
-
-	/**
-	 * Get new user account
-	 * @param accountUser - {@link AccountUserVO}
-	 * @return new account {@link Account}
-	 */
-	private Account getNewAccout(AccountUserVO accountUser) {
+	public Long createAccount(AccountUserDTO accountUser) {
 		User user = getNewUser(accountUser);
 		Balance actualBalance = getInitialBalance();
 
@@ -54,7 +47,19 @@ public class AccountService {
 				.user(user)
 				.actualBalance(actualBalance)
 				.build();
-		return account;
+		
+		return accountRepository.save(account).getNumber();
+	}
+	
+	/**
+	 * Get {@link AccountDTO} by account number
+	 * @param accountNumber - {@link Long}
+	 * @return {@link AccountDTO}
+	 */
+	public AccountDTO getAccountByAccountNumber(Long accountNumber) {
+		Optional<Account> accountOptional = accountRepository.findById(accountNumber);
+		accountOptional.orElseThrow(() -> new ObjectNotFoundException(MessageEnum.ACCOUNT_NOT_FOUND));
+		return new AccountDTO(accountOptional.get());
 	}
 
 	/**
@@ -71,10 +76,10 @@ public class AccountService {
 
 	/**
 	 * Create the new user for account
-	 * @param accountUser - {@link AccountUserVO}
+	 * @param accountUser - {@link AccountUserDTO}
 	 * @return new user - {@link User}
 	 */
-	private User getNewUser(AccountUserVO accountUser) {
+	private User getNewUser(AccountUserDTO accountUser) {
 		User user = User.builder()
 				.address(accountUser.getAddress())
 				.documentID(accountUser.getDocumentID())
