@@ -1,0 +1,29 @@
+{
+	"address": "QC 3 C 3",
+	"currency": "BRL",
+	"documentID": "2115242",
+	"email": "tiagodf.souza@gmail.com",
+	"name": "Tiago Souza",
+	"phoneNumber": "(61) 99209-8528"
+}
+
+{
+	"address": "QC 3 C 3",
+	"currency": "BRL",
+	"documentID": "321321",
+	"email": "clara@teste.com",
+	"name": "Clara Magalhães",
+	"phoneNumber": "(61) 99999-11111"
+}
+
+
+{
+	"accountNumber": 1,
+	"idUser": 1,
+	"address": "QC 3 C Casa 3",
+	"currency": "BRL",
+	"documentID": "2115242",
+	"email": "tiagodf.souza@gmail.com",
+	"name": "Tiago Macêdo Souza",
+	"phoneNumber": "(61) 99209-8528"
+}
