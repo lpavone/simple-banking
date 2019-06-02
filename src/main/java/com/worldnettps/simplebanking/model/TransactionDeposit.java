@@ -1,25 +1,37 @@
 package com.worldnettps.simplebanking.model;
 
-import javax.persistence.Column;
+import java.math.BigDecimal;
+import java.util.Date;
+
 import javax.persistence.Entity;
-import javax.persistence.Enumerated;
 import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.Table;
 
-import com.worldnettps.simplebanking.model.enums.CardType;
+import com.worldnettps.simplebanking.model.enums.TransactionType;
 
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@Entity
-@PrimaryKeyJoinColumn(name="transaction_id")
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper=true)
+@Entity
+@Table
+@PrimaryKeyJoinColumn(name="transaction_id")
 public class TransactionDeposit extends Transaction {
 	
 	private static final long serialVersionUID = 1L;
 
+	@Builder(builderMethodName = "depositBuilder")
+	public TransactionDeposit(Long idTransaction, Account account, TransactionType type, Date dateTransaction, BigDecimal amount) {
+		super(idTransaction, account, type, dateTransaction, amount);
+	}
+
+	/*
 	@Column
 	private String cardNumber;
 
@@ -28,6 +40,9 @@ public class TransactionDeposit extends Transaction {
 	
 	@Enumerated
 	private CardType cardType;
+	*/
+	
+	
 	
 	
 }

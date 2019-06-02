@@ -11,6 +11,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -23,7 +26,7 @@ import lombok.Setter;
 @Entity
 @Builder
 @NoArgsConstructor
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode
 public class Balance implements Serializable {
 	
@@ -40,8 +43,13 @@ public class Balance implements Serializable {
 	@Column
 	private BigDecimal finalBalance;
 	
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name="transaction_id")
 	private Transaction transaction;
+	
+	
+	@Column
+	private Long accountNumber;
 	
 }

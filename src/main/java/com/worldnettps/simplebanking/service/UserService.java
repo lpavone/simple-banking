@@ -1,27 +1,14 @@
 package com.worldnettps.simplebanking.service;
 
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.worldnettps.simplebanking.dto.AccountUserDTO;
 import com.worldnettps.simplebanking.dto.UserSessionDTO;
-import com.worldnettps.simplebanking.exceptions.ObjectNotFoundException;
 import com.worldnettps.simplebanking.model.Account;
 import com.worldnettps.simplebanking.model.User;
-import com.worldnettps.simplebanking.repository.AccountRepository;
-import com.worldnettps.simplebanking.repository.UserRepository;
-import com.worldnettps.simplebanking.util.MessageEnum;
 
 @Component
-public class UserService {
-	
-	@Autowired
-	private UserRepository userRepository;
-
-	@Autowired
-	private AccountRepository accountRepository;
+public class UserService extends AbstractService {
 	
 	/**
 	 * Update the user profile data
@@ -29,14 +16,8 @@ public class UserService {
 	 * @return updated user - {@link UserSessionDTO}
 	 */
 	public UserSessionDTO updateAccount(AccountUserDTO accountUser) {
-		Optional<User> userOptional = userRepository.findById(accountUser.getIdUser());
-		Optional<Account> accountOptional = accountRepository.findById(accountUser.getAccountNumber());
-		
-		accountOptional.orElseThrow(() -> new ObjectNotFoundException(MessageEnum.ACCOUNT_NOT_FOUND));
-		userOptional.orElseThrow(() -> new ObjectNotFoundException(MessageEnum.USER_NOT_FOUND));
-
-		User user = userOptional.get();
-		Account account = accountOptional.get();
+		User user = getUserByIdUser(accountUser.getIdUser());
+		Account account = getAccountByAccountNumber(accountUser.getAccountNumber());
 		
 		user = updateUser(accountUser, user);
 		
@@ -50,11 +31,7 @@ public class UserService {
 	 * @return user data - {@link UserSessionDTO}
 	 */
 	public UserSessionDTO getUserByAccountNumber(Long accountNumber) {
-		Optional<Account> accountOptional = accountRepository.findById(accountNumber);
-
-		accountOptional.orElseThrow(() -> new ObjectNotFoundException(MessageEnum.ACCOUNT_NOT_FOUND));
-
-		Account account = accountOptional.get();
+		Account account = getAccountByAccountNumber(accountNumber);
 		return new UserSessionDTO(account);
 	}
 
@@ -65,14 +42,8 @@ public class UserService {
 	 * @return {@link AccountUserDTO}
 	 */
 	public AccountUserDTO findById(Long idUser, Long accountNumber) {
-		Optional<User> userOptional = userRepository.findById(idUser);
-		Optional<Account> accountOptional = accountRepository.findById(accountNumber);
-		
-		accountOptional.orElseThrow(() -> new ObjectNotFoundException(MessageEnum.ACCOUNT_NOT_FOUND));
-		userOptional.orElseThrow(() -> new ObjectNotFoundException(MessageEnum.USER_NOT_FOUND));
-
-		User user = userOptional.get();
-		Account account = accountOptional.get();
+		User user = getUserByIdUser(idUser);
+		Account account = getAccountByAccountNumber(accountNumber);
 		
 		return new AccountUserDTO(user, account);
 	}

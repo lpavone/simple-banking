@@ -3,25 +3,23 @@ package com.worldnettps.simplebanking.service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.worldnettps.simplebanking.dto.AccountUserDTO;
 import com.worldnettps.simplebanking.dto.AccountDTO;
-import com.worldnettps.simplebanking.exceptions.ObjectNotFoundException;
+import com.worldnettps.simplebanking.dto.AccountUserDTO;
+import com.worldnettps.simplebanking.dto.BalanceDTO;
 import com.worldnettps.simplebanking.model.Account;
 import com.worldnettps.simplebanking.model.Balance;
 import com.worldnettps.simplebanking.model.User;
-import com.worldnettps.simplebanking.repository.AccountRepository;
-import com.worldnettps.simplebanking.util.MessageEnum;
+import com.worldnettps.simplebanking.repository.BalanceRepository;
 
 @Component
-public class AccountService {
+public class AccountService extends AbstractService {
 	
 	@Autowired
-	private AccountRepository accountRepository;
+	private BalanceRepository balanceRepository;
 	
 	/**
 	 * Get all accounts
@@ -48,7 +46,12 @@ public class AccountService {
 				.actualBalance(actualBalance)
 				.build();
 		
-		return accountRepository.save(account).getNumber();
+		Long accountNumber = accountRepository.save(account).getNumber();
+		
+		actualBalance.setAccountNumber(accountNumber);
+		balanceRepository.save(actualBalance);
+		
+		return accountNumber;
 	}
 	
 	/**
@@ -56,10 +59,19 @@ public class AccountService {
 	 * @param accountNumber - {@link Long}
 	 * @return {@link AccountDTO}
 	 */
-	public AccountDTO getAccountByAccountNumber(Long accountNumber) {
-		Optional<Account> accountOptional = accountRepository.findById(accountNumber);
-		accountOptional.orElseThrow(() -> new ObjectNotFoundException(MessageEnum.ACCOUNT_NOT_FOUND));
-		return new AccountDTO(accountOptional.get());
+	public AccountDTO getAccountDTOByAccountNumber(Long accountNumber) {
+		Account account = getAccountByAccountNumber(accountNumber);
+		return new AccountDTO(account);
+	}
+	
+	/**
+	 * Get {@link BalanceDTO} by account number
+	 * @param accountNumber - {@link Long}
+	 * @return {@link BalanceDTO}
+	 */
+	public BalanceDTO getBalanceDTOByAccountNumber(Long accountNumber) {
+		BigDecimal balanceAmount = balanceRepository.getBalanceByAccountNumber(accountNumber);
+		return BalanceDTO.builder().amount(balanceAmount).build();
 	}
 
 	/**
