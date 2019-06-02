@@ -5,6 +5,10 @@ import java.io.Serializable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * Default {@link TransactionError}
+ * @author Tiago
+ */
 @Getter
 @AllArgsConstructor
 public class TransactionError implements Serializable {

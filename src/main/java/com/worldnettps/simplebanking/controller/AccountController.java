@@ -24,6 +24,8 @@ import com.worldnettps.simplebanking.service.UserService;
 import com.worldnettps.simplebanking.util.MessageEnum;
 import com.worldnettps.simplebanking.util.SimpleBankingUtil;
 
+import io.swagger.annotations.ApiOperation;
+
 @CrossOrigin
 @RestController
 @RequestMapping("/api/v1/account")
@@ -35,7 +37,8 @@ public class AccountController extends AbstractController {
 	@Autowired
 	private UserService userService;
 	
-	// TODO - juntar este metodo com o anterior
+
+	@ApiOperation(value = "Get account by account number")
 	@GetMapping(path="/{accountNumber}", produces = MediaType.APPLICATION_JSON)
 	public ResponseEntity<AccountDTO> getAccounts(@PathVariable Long accountNumber){
 		SimpleBankingUtil.validateData(accountNumber, "Account number");
@@ -44,6 +47,7 @@ public class AccountController extends AbstractController {
 		return body(account);
 	}
 	
+	@ApiOperation(value = "Get balance account by account number")
 	@GetMapping(path="/{accountNumber}/balance", produces = MediaType.APPLICATION_JSON)
 	public ResponseEntity<BalanceDTO> getBalanceAccount(@PathVariable Long accountNumber){
 		SimpleBankingUtil.validateData(accountNumber, "Account number");
@@ -52,6 +56,7 @@ public class AccountController extends AbstractController {
 		return body(balance);
 	}
 	
+	@ApiOperation(value = "Create a new account")
 	@PostMapping(consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
 	public ResponseEntity<Long> createAccount(@RequestBody AccountUserDTO accountUser){
 		
@@ -66,6 +71,7 @@ public class AccountController extends AbstractController {
 		return body(account);
 	}
 	
+	@ApiOperation(value = "Get user by id user and account number")
 	@GetMapping(path="/user/{idUser}/{accountNumber}", produces = MediaType.APPLICATION_JSON)
 	public ResponseEntity<AccountUserDTO> getUserById(
 			@PathVariable("idUser") Long idUser, 
@@ -78,6 +84,7 @@ public class AccountController extends AbstractController {
 		return body(accountUserVO);
 	}
 	
+	@ApiOperation(value = "Update user")
 	@PutMapping(path="/user/{idUser}", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
 	public ResponseEntity<UserSessionDTO> updateUserProfile(
 			@PathVariable Long idUser, 
@@ -92,6 +99,10 @@ public class AccountController extends AbstractController {
 		return body(account);
 	}
 
+	/**
+	 * Validate required fields from account user
+	 * @param accountUser
+	 */
 	private void validateUser(AccountUserDTO accountUser) {
 		SimpleBankingUtil.validateData(accountUser.getName(), "Name");
 		SimpleBankingUtil.validateData(accountUser.getEmail(), "Email");

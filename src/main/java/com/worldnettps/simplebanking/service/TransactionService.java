@@ -34,6 +34,11 @@ public class TransactionService extends AbstractService {
 	@Autowired
 	private TransactionRepository transactionRepository;
 	
+	/**
+	 * Get all transaction by account number
+	 * @param accountNumber - {@link Long}
+	 * @return {@link List} of {@link ReceiptDTO}
+	 */
 	public List<ReceiptDTO> getAllTransactions(Long accountNumber) {
 
 		List<? extends Transaction> allTransaction = transactionRepository.getAllTransaction(accountNumber);
@@ -139,6 +144,11 @@ public class TransactionService extends AbstractService {
 		return new ReceiptDTO(saveTransfer, transferDTO.getAccountNumber(), false);
 	}
 
+	/**
+	 * Validate the transfer rules
+	 * @param transferDTO
+	 * @param actualBalanceFrom
+	 */
 	private void validateTransferRules(TransferDTO transferDTO, Balance actualBalanceFrom) {
 		if (transferDTO.getAccountNumber().equals(transferDTO.getAccountNumberTo())) {
 			throw new BusinessException(MessageEnum.ACCOUNT_ORIGIN_DESTINATION_EQUALS);

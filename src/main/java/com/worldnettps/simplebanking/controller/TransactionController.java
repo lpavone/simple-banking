@@ -20,6 +20,8 @@ import com.worldnettps.simplebanking.dto.TransferDTO;
 import com.worldnettps.simplebanking.service.TransactionService;
 import com.worldnettps.simplebanking.util.SimpleBankingUtil;
 
+import io.swagger.annotations.ApiOperation;
+
 @CrossOrigin
 @RestController
 @RequestMapping("/api/v1/transaction")
@@ -28,6 +30,7 @@ public class TransactionController extends AbstractController {
 	@Autowired
 	private TransactionService transactionService;
 	
+	@ApiOperation(value = "Get all transactions by account number")
 	@GetMapping(produces = MediaType.APPLICATION_JSON, path="/{accountNumber}")
 	public ResponseEntity<List<ReceiptDTO>> getAllTransactions(
 			@PathVariable Long accountNumber){
@@ -38,6 +41,7 @@ public class TransactionController extends AbstractController {
 		return body(transactions);
 	}
 	
+	@ApiOperation(value = "Make a new deposit value in account")
 	@PostMapping(path="/deposit", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
 	public ResponseEntity<ReceiptDTO> makeDeposit(@RequestBody DepositDTO depositDTO){
 		
@@ -51,6 +55,7 @@ public class TransactionController extends AbstractController {
 		return body(depositMade);
 	}
 	
+	@ApiOperation(value = "Transfer funds between accounts")
 	@PostMapping(path="/transfer", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
 	public ResponseEntity<ReceiptDTO> transferFunds(@RequestBody TransferDTO transferDTO){
 		

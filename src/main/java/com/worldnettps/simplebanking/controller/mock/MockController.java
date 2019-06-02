@@ -19,8 +19,8 @@ import com.worldnettps.simplebanking.repository.BalanceRepository;
 import com.worldnettps.simplebanking.repository.TransactionRepository;
 import com.worldnettps.simplebanking.service.AccountService;
 
-@RestController
-@RequestMapping("/api/v1/mock")
+//@RestController
+//@RequestMapping("/api/v1/mock")
 public class MockController {
 
 	@Autowired
