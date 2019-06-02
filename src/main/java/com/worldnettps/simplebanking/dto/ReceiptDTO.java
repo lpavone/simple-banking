@@ -34,22 +34,21 @@ public class ReceiptDTO {
 	 * @param transfer - {@link TransactionTransfer}
 	 * @param accountNumber - {@link Long}
 	 */
-	public ReceiptDTO(TransactionTransfer transfer, Long accountNumber) {
+	public ReceiptDTO(TransactionTransfer transfer, Long accountNumber, boolean invertValue) {
 		this.accountNumber = transfer.getAccount().getNumber();
 		this.userName = transfer.getAccount().getUser().getName();
 		this.transactionDate = transfer.getTransactionDate();
+		this.amount = transfer.getAmount();
 		
 		if (transfer.getAccount().getNumber().equals(accountNumber)){
 			// Debit
 			this.description = "Transfer funds TO account " + transfer.getAccountFrom().getNumber();
-			this.amount = transfer.getAmount().multiply(BigDecimal.valueOf(-1));
+			this.amount = transfer.getAmount().multiply(BigDecimal.valueOf(invertValue ? -1 : 1));
 		} else {
 			// Credit
 			this.description = "Transfer funds FROM account " + transfer.getAccountFrom().getNumber();
-			this.amount = transfer.getAmount();
 		}
 		
-		this.description = transfer.getType().toString();
 	}
 	
 }

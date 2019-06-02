@@ -23,7 +23,7 @@ import lombok.Setter;
 @EqualsAndHashCode(callSuper=true)
 @Entity
 @Table
-@PrimaryKeyJoinColumn(name="transaction_id")
+@PrimaryKeyJoinColumn(name="idTransaction")
 public class TransactionTransfer extends Transaction {
 
 	private static final long serialVersionUID = 1L;

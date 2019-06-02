@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.worldnettps.simplebanking.dto.UserSessionDTO;
 import com.worldnettps.simplebanking.service.UserService;
+import com.worldnettps.simplebanking.util.SimpleBankingUtil;
 
 @CrossOrigin
 @RestController
@@ -22,7 +23,9 @@ public class LoginController extends AbstractController {
 	private UserService userService;
 	
 	@GetMapping(path="/{accountNumber}", produces = MediaType.APPLICATION_JSON)
-	public ResponseEntity<UserSessionDTO> getAccounts(@PathVariable Long accountNumber){
+	public ResponseEntity<UserSessionDTO> getAccounts(@PathVariable Long accountNumber){		
+		SimpleBankingUtil.validateData(accountNumber, "Account number");
+
 		UserSessionDTO userSessionVO = userService.getUserByAccountNumber(accountNumber);
 		return body(userSessionVO);
 	}

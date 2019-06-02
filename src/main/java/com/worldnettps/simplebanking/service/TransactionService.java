@@ -1,5 +1,6 @@
 package com.worldnettps.simplebanking.service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Component;
 import com.worldnettps.simplebanking.dto.DepositDTO;
 import com.worldnettps.simplebanking.dto.ReceiptDTO;
 import com.worldnettps.simplebanking.dto.TransferDTO;
+import com.worldnettps.simplebanking.exceptions.BusinessException;
 import com.worldnettps.simplebanking.model.Account;
 import com.worldnettps.simplebanking.model.Balance;
 import com.worldnettps.simplebanking.model.Transaction;
@@ -18,6 +20,7 @@ import com.worldnettps.simplebanking.model.enums.TransactionType;
 import com.worldnettps.simplebanking.repository.DepositRepository;
 import com.worldnettps.simplebanking.repository.TransactionRepository;
 import com.worldnettps.simplebanking.repository.TransferRepository;
+import com.worldnettps.simplebanking.util.MessageEnum;
 
 @Component
 public class TransactionService extends AbstractService {
@@ -40,7 +43,7 @@ public class TransactionService extends AbstractService {
 			if (transaction.getType().equals(TransactionType.DEPOSIT)){
 				receipts.add(new ReceiptDTO((TransactionDeposit) transaction));
 			} else if (transaction.getType().equals(TransactionType.TRANSFER)){
-				receipts.add(new ReceiptDTO((TransactionTransfer) transaction, accountNumber));
+				receipts.add(new ReceiptDTO((TransactionTransfer) transaction, accountNumber, true));
 			}
 		});
 		
@@ -53,6 +56,10 @@ public class TransactionService extends AbstractService {
 	 * @return transaction - {@link TransactionDeposit}
 	 */
 	public ReceiptDTO makeDeposit(DepositDTO depositDTO) {
+		if (BigDecimal.ZERO.compareTo(depositDTO.getAmount()) >= 0) {
+			throw new BusinessException(MessageEnum.AMOUNT_INVALID);
+		}
+		
 		Account account = getAccountByAccountNumber(depositDTO.getAccountNumber());
 		Balance actualBalance = account.getActualBalance();
 		
@@ -85,10 +92,13 @@ public class TransactionService extends AbstractService {
 	 * @return transaction - {@link TransactionDeposit}
 	 */
 	public ReceiptDTO transferFunds(TransferDTO transferDTO) {
+		
 		Account accountFrom = getAccountByAccountNumber(transferDTO.getAccountNumber());
-		Account accountTo = getAccountByAccountNumber(transferDTO.getAccountNumberTo());
-
 		Balance actualBalanceFrom = accountFrom.getActualBalance();
+
+		validateTransferRules(transferDTO, actualBalanceFrom);
+		
+		Account accountTo = getAccountByAccountNumber(transferDTO.getAccountNumberTo());
 		Balance actualBalanceTo = accountTo.getActualBalance();
 		
 		// Create the transfer transaction
@@ -126,7 +136,19 @@ public class TransactionService extends AbstractService {
 		accountTo.setActualBalance(newBalanceTo);
 		accountRepository.save(accountTo);
 		
-		return new ReceiptDTO(saveTransfer, transferDTO.getAccountNumber());
+		return new ReceiptDTO(saveTransfer, transferDTO.getAccountNumber(), false);
+	}
+
+	private void validateTransferRules(TransferDTO transferDTO, Balance actualBalanceFrom) {
+		if (transferDTO.getAccountNumber().equals(transferDTO.getAccountNumberTo())) {
+			throw new BusinessException(MessageEnum.ACCOUNT_ORIGIN_DESTINATION_EQUALS);
+		}
+		if (BigDecimal.ZERO.compareTo(transferDTO.getAmount()) >= 0) {
+			throw new BusinessException(MessageEnum.AMOUNT_INVALID);
+		}
+		if (actualBalanceFrom.getFinalBalance().compareTo(transferDTO.getAmount()) == -1) {
+			throw new BusinessException(MessageEnum.AMOUNT_INVALID);
+		}
 	}
 
 }

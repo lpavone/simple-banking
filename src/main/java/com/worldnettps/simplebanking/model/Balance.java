@@ -45,7 +45,7 @@ public class Balance implements Serializable {
 	
 	@JsonIgnore
 	@ManyToOne
-	@JoinColumn(name="transaction_id")
+	@JoinColumn(name="idTransaction")
 	private Transaction transaction;
 	
 	

@@ -12,10 +12,11 @@ import com.worldnettps.simplebanking.model.Transaction;
 @Repository
 public interface TransactionRepository extends CrudRepository<Transaction, Long> {
 	
-	@Query(value = " SELECT t "
+	@Query(value = " SELECT distinct t "
 			+ " FROM Balance b "
 			+ " JOIN b.transaction t "
-			+ " WHERE b.accountNumber = :accountNumber ")
+			+ " WHERE b.accountNumber = :accountNumber "
+			+ " ORDER BY t.transactionDate ")
 	public List<? extends Transaction> getAllTransaction(@Param("accountNumber") Long accountNumber);
 
 }

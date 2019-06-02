@@ -18,6 +18,7 @@ import com.worldnettps.simplebanking.dto.DepositDTO;
 import com.worldnettps.simplebanking.dto.ReceiptDTO;
 import com.worldnettps.simplebanking.dto.TransferDTO;
 import com.worldnettps.simplebanking.service.TransactionService;
+import com.worldnettps.simplebanking.util.SimpleBankingUtil;
 
 @CrossOrigin
 @RestController
@@ -31,7 +32,7 @@ public class TransactionController extends AbstractController {
 	public ResponseEntity<List<ReceiptDTO>> getAllTransactions(
 			@PathVariable Long accountNumber){
 		
-		// TODO - fazer validações
+		SimpleBankingUtil.validateData(accountNumber, "Account number");
 		
 		List<ReceiptDTO> transactions = transactionService.getAllTransactions(accountNumber);
 		return body(transactions);
@@ -40,7 +41,11 @@ public class TransactionController extends AbstractController {
 	@PostMapping(path="/deposit", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
 	public ResponseEntity<ReceiptDTO> makeDeposit(@RequestBody DepositDTO depositDTO){
 		
-		// TODO - fazer validações
+		SimpleBankingUtil.validateUser(depositDTO.getIdUser());
+		
+		SimpleBankingUtil.validateData(depositDTO.getAccountNumber(), "Account number");
+		SimpleBankingUtil.validateData(depositDTO.getAmount(), "Amount");
+		SimpleBankingUtil.validateData(depositDTO.getDate(), "Date");
 		
 		ReceiptDTO depositMade = transactionService.makeDeposit(depositDTO);
 		return body(depositMade);
@@ -49,7 +54,12 @@ public class TransactionController extends AbstractController {
 	@PostMapping(path="/transfer", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
 	public ResponseEntity<ReceiptDTO> transferFunds(@RequestBody TransferDTO transferDTO){
 		
-		// TODO - fazer validações
+		SimpleBankingUtil.validateUser(transferDTO.getIdUser());
+		
+		SimpleBankingUtil.validateData(transferDTO.getAccountNumber(), "Account number");
+		SimpleBankingUtil.validateData(transferDTO.getAccountNumberTo(), "Account number TO");
+		SimpleBankingUtil.validateData(transferDTO.getAmount(), "Amount");
+		SimpleBankingUtil.validateData(transferDTO.getDate(), "Date");
 		
 		ReceiptDTO transferMade = transactionService.transferFunds(transferDTO);
 		return body(transferMade);
