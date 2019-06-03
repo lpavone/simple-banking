@@ -1,5 +1,6 @@
 package com.worldnettps.simplebanking.controller;
 
+import java.util.Calendar;
 import java.util.List;
 
 import javax.ws.rs.core.MediaType;
@@ -49,8 +50,10 @@ public class TransactionController extends AbstractController {
 		
 		SimpleBankingUtil.validateData(depositDTO.getAccountNumber(), "Account number");
 		SimpleBankingUtil.validateData(depositDTO.getAmount(), "Amount");
-		SimpleBankingUtil.validateData(depositDTO.getDate(), "Date");
-		
+		//SimpleBankingUtil.validateData(depositDTO.getDate(), "Date");
+
+		depositDTO.setDate(Calendar.getInstance().getTime());
+
 		ReceiptDTO depositMade = transactionService.makeDeposit(depositDTO);
 		return body(depositMade);
 	}
@@ -64,7 +67,9 @@ public class TransactionController extends AbstractController {
 		SimpleBankingUtil.validateData(transferDTO.getAccountNumber(), "Account number");
 		SimpleBankingUtil.validateData(transferDTO.getAccountNumberTo(), "Account number TO");
 		SimpleBankingUtil.validateData(transferDTO.getAmount(), "Amount");
-		SimpleBankingUtil.validateData(transferDTO.getDate(), "Date");
+		//SimpleBankingUtil.validateData(transferDTO.getDate(), "Date");
+		
+		transferDTO.setDate(Calendar.getInstance().getTime());
 		
 		ReceiptDTO transferMade = transactionService.transferFunds(transferDTO);
 		return body(transferMade);

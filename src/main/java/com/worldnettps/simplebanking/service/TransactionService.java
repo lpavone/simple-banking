@@ -157,7 +157,7 @@ public class TransactionService extends AbstractService {
 			throw new BusinessException(MessageEnum.AMOUNT_INVALID);
 		}
 		if (actualBalanceFrom.getFinalBalance().compareTo(transferDTO.getAmount()) == -1) {
-			throw new BusinessException(MessageEnum.AMOUNT_INVALID);
+			throw new BusinessException(MessageEnum.INSUFFICIENT_BALANCE);
 		}
 	}
 
